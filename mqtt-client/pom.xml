@@ -96,6 +96,13 @@
       <scope>test</scope>
     </dependency>
 
+
+    <dependency>
+      <groupId>com.fazecast</groupId>
+      <artifactId>jSerialComm</artifactId>
+      <version>2.5.3</version>
+    </dependency>
+
     <!-- to enable the webconsole in the apollo broker -->
     <dependency>
       <groupId>org.apache.activemq</groupId>

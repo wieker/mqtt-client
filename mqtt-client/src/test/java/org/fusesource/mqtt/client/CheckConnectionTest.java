@@ -4,6 +4,8 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 
+import static com.fazecast.jSerialComm.SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+
 public class CheckConnectionTest {
     public static void main(String[] args) throws Exception {
         MQTT mqtt = new MQTT();
@@ -22,13 +24,18 @@ public class CheckConnectionTest {
 
         commPort.addDataListener(new SerialPortDataListener() {
             public int getListeningEvents() {
-                return 0;
+                return LISTENING_EVENT_DATA_AVAILABLE;
             }
 
             public void serialEvent(SerialPortEvent serialPortEvent) {
                 System.out.println(serialPortEvent.getReceivedData());
+                SerialPort comPort = serialPortEvent.getSerialPort();
+                System.out.println("Available: " + comPort.bytesAvailable() + " bytes.");
+                byte[] newData = new byte[comPort.bytesAvailable()];
+                int numRead = comPort.readBytes(newData, newData.length);
+                System.out.println("Read " + numRead + " bytes.");
                 try {
-                    connection.publish("foo", "Hello".getBytes(), QoS.AT_LEAST_ONCE, false);
+                    connection.publish("foo", newData, QoS.AT_LEAST_ONCE, false);
                 } catch (Exception e) {
                     System.out.println("ec " + e);
                 }
@@ -36,7 +43,7 @@ public class CheckConnectionTest {
         });
 
 
-        Topic[] topics = {new Topic("foo", QoS.AT_LEAST_ONCE)};
+        /*Topic[] topics = {new Topic("foo", QoS.AT_LEAST_ONCE)};
         byte[] qoses = connection.subscribe(topics);
 
         Message message = connection.receive();
@@ -45,6 +52,6 @@ public class CheckConnectionTest {
         // process the message then:
         message.ack();
 
-        connection.disconnect();
+        connection.disconnect();*/
     }
 }

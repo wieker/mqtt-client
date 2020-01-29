@@ -12,7 +12,8 @@ public class CheckConnectionTest {
         final BlockingConnection connection = mqtt.blockingConnection();
         connection.connect();
 
-        SerialPort commPort = SerialPort.getCommPort("/dev/ttyACM1");
+        SerialPort commPort = SerialPort.getCommPort("/dev/ttyACM0");
+        commPort.setBaudRate(115200);
         System.out.println(commPort.openPort());
         if (!commPort.isOpen()) {
             System.out.println("fuckup");
